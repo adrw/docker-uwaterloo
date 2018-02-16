@@ -76,7 +76,7 @@ Note: You **do not have to** build the image locally prior to Pull Request. `ful
 **Contribute a new image:** If there's a class specific stack that you'd like to add, follow the contribution guidelines before and do the following steps as well to create a new tagged image.
 
 1. Add a new collection of packages derived from a parent one in [build_dockerfile.sh](https://github.com/andrewparadi/docker-uwaterloo/tree/master/build_dockerfile.sh)
-2. Add to list of `IMAGE`s in 2 for loops that create image folder, and generate Dockerfiles in [build_dockerfile.sh](https://github.com/andrewparadi/docker-uwaterloo/tree/master/build_dockerfile.sh)
+2. Add to list of `tags`, and add any required code to generate `{tag}/IN.apps` collection in [build_dockerfile.sh](https://github.com/andrewparadi/docker-uwaterloo/tree/master/build_dockerfile.sh)
 3. Add new rows to [README.md](https://github.com/andrewparadi/docker-uwaterloo/tree/master/README.md) Images and Collections tables
 4. Test building your new tagged image with `$ make build TAG={tag}`
 5. When your code is merged in, a new trigger will be added to [Docker Hub](https://hub.docker.com/r/andrewparadi/uwaterloo/) to enable automatic builds for your new image

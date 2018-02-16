@@ -4142,3 +4142,4 @@ RUN	apt-get install libx32gfortran-5-dev -y && \
 	apt-get install zsh-doc -y && \
 	apt-get clean && \
 	rm -rf /var/log
+RUN	echo 'set-option -g mouse on' > ~/.tmux.conf

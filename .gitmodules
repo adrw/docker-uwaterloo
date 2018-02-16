@@ -1,0 +1,3 @@
+[submodule "cs350-os161"]
+	path = cs350-os161
+	url = git@github.com:andrewparadi/docker-cs350-os161.git

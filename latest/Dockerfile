@@ -1,7 +1,7 @@
 # By Andrew Paradi | Source at https://github.com/andrewparadi/docker-uwaterloo 
 FROM ubuntu:16.04
 LABEL Andrew Paradi <me@andrewparadi.com>
-LABEL Tag: thin
+LABEL Tag: latest
 
 ARG	DEBIAN_FRONTEND=noninteractive
 

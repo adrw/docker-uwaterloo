@@ -12,3 +12,4 @@ RUN	apt-get update && \
 	apt-get install wget -y && \
 	apt-get clean && \
 	rm -rf /var/log
+RUN	echo 'set-option -g mouse on' > ~/.tmux.conf

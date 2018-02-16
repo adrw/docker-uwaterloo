@@ -9,28 +9,34 @@ cat collections/ALL.apps | grep -E -v "adobereader-enu/|kbd/|console-setup|cpp-6
 cat collections/PASS.apps | grep -E "abiword|account-|audio|chromium|compiz|cups|doc-|-doc|docbook|eclipse|epiphany|firefox|font|gnome|icon|indicator-|kde|kubuntu|latex|^tex|language|^lib|libreoffice|locale|media|netbeans|pdf|unity|theme|thunderbird|vlc|xfce4|xscreensaver|xserver|x11" > collections/IGNORE.apps
 cat collections/PASS.apps | grep -E -v "abiword|account-|audio|chromium|compiz|cups|doc-|-doc|docbook|eclipse|epiphany|firefox|font|gnome|icon|indicator-|kde|kubuntu|latex|^tex|language|^lib|libreoffice|locale|media|netbeans|pdf|unity|theme|thunderbird|vlc|xfce4|xscreensaver|xserver|x11" > collections/INSTALL.apps
 
-# Build per image IN.apps
-for IMAGE in "thin" "full" "gcc"; do
-	mkdir -p ./${IMAGE}
+# Build IN.apps for each TAG 
+declare -a tags=("latest" "thin" "full" "gcc")
+for TAG in "${tags[@]}"; do
+	mkdir -p ./${TAG}
 done
-cp collections/PASS.apps full/IN.apps
+cp collections/INSTALL.apps latest/IN.apps
 cp collections/INSTALL.apps thin/IN.apps
+cp collections/PASS.apps full/IN.apps
 cp collections/GCC.apps gcc/IN.apps
 
-for IMAGE in "full" "thin" "gcc"; do
+# Build Dockerfile for each TAG
+for TAG in "${tags[@]}"; do
 
 	# Init
 	i=0
 	opt="-y"
-	rbs=3000 # RUN batch size: max is 3000, lower rbs produces more layers + easier to rebuild a layer if a package fails install
-	Dockerfile="${IMAGE}/Dockerfile"
-	apps="${IMAGE}/IN.apps"
+	rbs=3000 	# No. of instructions per RUN layer
+				# max is experimentally ~3250
+				# lower rbs => more layers, easier to rebuild a layer if a package fails on install
+				# bigger rbs => less layers, smaller image size
+	Dockerfile="${TAG}/Dockerfile"
+	apps="${TAG}/IN.apps"
 
 	# Build Dockerfile
 	echo "# By Andrew Paradi | Source at https://github.com/andrewparadi/docker-uwaterloo " > ${Dockerfile}
 	echo "FROM ubuntu:16.04" >> ${Dockerfile}
 	echo "LABEL Andrew Paradi <me@andrewparadi.com>" >> ${Dockerfile}
-	echo "LABEL Tag: ${IMAGE}\n" >> ${Dockerfile}
+	echo "LABEL Tag: ${TAG}\n" >> ${Dockerfile}
 	echo 'ARG\tDEBIAN_FRONTEND=noninteractive\n' >> ${Dockerfile}
 	echo 'RUN\tapt-get update && \\' >> ${Dockerfile}
 	echo '\tapt-get install apt-utils -y && \\' >> ${Dockerfile}
@@ -43,7 +49,10 @@ for IMAGE in "full" "thin" "gcc"; do
 		(( i % rbs != 1 )) && (( i % rbs != 0 )) && echo "\tapt-get install ${PACKAGE} ${opt} && \\" >> ${Dockerfile}
 		(( i % rbs == 0 )) && echo "\tapt-get install ${PACKAGE} ${opt}" >> ${Dockerfile}
 	done
+	# Cleanup
 	echo "\tapt-get clean && \\" >> ${Dockerfile}
 	echo "\trm -rf /var/log" >> ${Dockerfile}
+	# Customizations
+	echo "RUN\techo 'set-option -g mouse on' > ~/.tmux.conf" >> ${Dockerfile}
 
 done
