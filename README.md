@@ -96,4 +96,3 @@ Other
 - Released under GNU GPLv3 Licence.
 - [Docker Hub](https://hub.docker.com/r/andrewparadi/uwaterloo/)
 - [Source Code](https://github.com/andrewparadi/docker-uwaterloo)
-- [Andrew Paradi](https://www.andrewparadi.com)
